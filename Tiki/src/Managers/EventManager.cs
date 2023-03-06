@@ -17,7 +17,7 @@ internal static class EventManager
   private static CommandService CommandService = ServiceManager.GetService<CommandService>();
 
   /// <summary>Discord configuration</summary>
-  private static Config.DiscordConfig Config = ServiceManager.GetService<Config.DiscordConfig>();
+  private static TikiConfig Config = ServiceManager.GetService<TikiConfig>();
 
 
   /// <summary>

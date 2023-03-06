@@ -3,13 +3,12 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Tiki.src.Managers;
-using static Tiki.Config;
 
 namespace Tiki.src;
 internal class Bot
 {
   /// <summary>Discord Configuration from arguments</summary>
-  private Config.DiscordConfig DiscordConfig { get; set; }
+  private TikiConfig DiscordConfig { get; set; }
 
   /// <summary>Discord client</summary>
   private DiscordSocketClient DiscordClient;
@@ -22,7 +21,7 @@ internal class Bot
   /// Constructor
   /// </summary>
   /// <param name="nToken">Discord config</param>
-  public Bot(Config.DiscordConfig nConfig)
+  public Bot(TikiConfig nConfig)
   {
     this.DiscordConfig = nConfig;
   }

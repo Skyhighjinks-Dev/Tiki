@@ -1,5 +1,4 @@
 ﻿using Tiki.src;
-using static Tiki.Config;
 
 namespace Tiki;
 
@@ -10,8 +9,8 @@ internal class Program
   /// </summary>
   /// <param name="args">Command arguments - contains sensitive data</param>
   static async Task Main(string[] args)
-  { 
-    DiscordConfig config = ExtractDiscordConfig(args);
+  {
+    TikiConfig config = ExtractDiscordConfig(args);
 
     Bot bot = new Bot(config);
     await bot.MainAsync();
@@ -23,9 +22,9 @@ internal class Program
   /// </summary>
   /// <param name="nArgs">Args passed into main method</param>
   /// <returns>Discord Config</returns>
-  private static DiscordConfig ExtractDiscordConfig(string[] nArgs)
-  { 
-    DiscordConfig toReturn = new DiscordConfig();
+  private static TikiConfig ExtractDiscordConfig(string[] nArgs)
+  {
+    TikiConfig toReturn = new TikiConfig();
 
     for(int x = 0; x < nArgs.Length; x++)
     { 
