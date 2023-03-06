@@ -5,15 +5,24 @@ namespace Tiki;
 
 internal class Program
 {
+  /// <summary>
+  /// App entry
+  /// </summary>
+  /// <param name="args">Command arguments - contains sensitive data</param>
   static async Task Main(string[] args)
   { 
     DiscordConfig config = ExtractDiscordConfig(args);
 
-    Bot bot = new Bot(config.DiscordToken);
-    await bot.MainAsync(config.DiscordCommandPrefix);
+    Bot bot = new Bot(config);
+    await bot.MainAsync();
   }
 
 
+  /// <summary>
+  /// Extracts discord configuration from args
+  /// </summary>
+  /// <param name="nArgs">Args passed into main method</param>
+  /// <returns>Discord Config</returns>
   private static DiscordConfig ExtractDiscordConfig(string[] nArgs)
   { 
     DiscordConfig toReturn = new DiscordConfig();

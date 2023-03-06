@@ -2,28 +2,37 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tiki.src.Managers;
+using static Tiki.Config;
 
 namespace Tiki.src;
 internal class Bot
 {
-  private string DiscordToken { get; init; }
+  /// <summary>Discord Configuration from arguments</summary>
+  private Config.DiscordConfig DiscordConfig { get; set; }
 
+  /// <summary>Discord client</summary>
   private DiscordSocketClient DiscordClient;
+
+  /// <summary>Command Service</summary>
   private CommandService CommandService;
 
-  public Bot(string nToken)
+
+  /// <summary>
+  /// Constructor
+  /// </summary>
+  /// <param name="nToken">Discord config</param>
+  public Bot(Config.DiscordConfig nConfig)
   {
-    this.DiscordToken = nToken;
+    this.DiscordConfig = nConfig;
   }
 
 
-  public async Task MainAsync(string nDiscordPrefix)
+  /// <summary>
+  /// Main executing async
+  /// Will run forever 
+  /// </summary>
+  public async Task MainAsync()
   {
     this.DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
     {
@@ -40,17 +49,18 @@ internal class Bot
 
     var collection = new ServiceCollection();
     collection.AddSingleton(DiscordClient)
-              .AddSingleton(CommandService);
+              .AddSingleton(CommandService)
+              .AddSingleton(DiscordConfig);
 
     ServiceManager.SetProvider(collection);
 
-    if (string.IsNullOrEmpty(DiscordToken))
+    if (string.IsNullOrEmpty(DiscordConfig.DiscordToken))
       throw new Exception("Discord token must be provided!");
 
 
     await CommandManager.LoadCommandsAsync();
-    await EventManager.RegisterEvents(nDiscordPrefix);
-    await DiscordClient.LoginAsync(TokenType.Bot, this.DiscordToken);
+    await EventManager.RegisterEvents();
+    await DiscordClient.LoginAsync(TokenType.Bot, this.DiscordConfig.DiscordToken);
     await DiscordClient.StartAsync();
 
     await Task.Delay(-1);

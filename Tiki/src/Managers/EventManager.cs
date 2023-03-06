@@ -10,28 +10,44 @@ using System.Threading.Tasks;
 namespace Tiki.src.Managers;
 internal static class EventManager
 {
+  /// <summary>DiscordSocketClient from DI</summary>
   private static DiscordSocketClient Client = ServiceManager.GetService<DiscordSocketClient>();
+
+  /// <summary>CommandService from DI</summary>
   private static CommandService CommandService = ServiceManager.GetService<CommandService>();
-  private static string CommandPrefix { get; set; }
 
-  public static async Task RegisterEvents(string nCommandPrefix)
+  /// <summary>Discord configuration</summary>
+  private static Config.DiscordConfig Config = ServiceManager.GetService<Config.DiscordConfig>();
+
+
+  /// <summary>
+  /// Registers all events to client and provides command prefix for MessageReceived event
+  /// </summary>
+  /// <param name="nCommandPrefix">Command prefix</param>
+  public static async Task RegisterEvents()
   { 
-    CommandPrefix = nCommandPrefix;
-
     Client.Ready += OnClientReady;
-    Client.MessageReceived += OnClientMessageRecieved;
+    Client.MessageReceived += OnClientMessageReceived;
   }
 
 
+  /// <summary>
+  /// Method to execute when client sends Ready event
+  /// </summary>
   private static async Task OnClientReady()
   {
     Console.WriteLine($"{Client.CurrentUser.Username} has logged in!");
 
     await Client.SetStatusAsync(UserStatus.Idle);
-    await Client.SetGameAsync($"Prefix: {CommandPrefix} - Under Development");
+    await Client.SetGameAsync($"Prefix: {Config.DiscordCommandPrefix} - Under Development");
   }
 
-  private static async Task OnClientMessageRecieved(SocketMessage nMessage)
+
+  /// <summary>
+  /// Handles messages being received
+  /// </summary>
+  /// <param name="nMessage">Message from discord</param>
+  private static async Task OnClientMessageReceived(SocketMessage nMessage)
   { 
     var message = (SocketUserMessage)nMessage;
     var context = new SocketCommandContext(Client, message);
@@ -40,7 +56,7 @@ internal static class EventManager
       return;
 
     int argPos = 0;
-    if(!message.HasStringPrefix(CommandPrefix, ref argPos) || message.HasMentionPrefix(Client.CurrentUser, ref argPos))
+    if(!message.HasStringPrefix(Config.DiscordCommandPrefix, ref argPos) || message.HasMentionPrefix(Client.CurrentUser, ref argPos))
       return; 
 
     var result = await CommandService.ExecuteAsync(context, argPos, ServiceManager.ServiceProvider);

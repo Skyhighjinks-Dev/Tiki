@@ -9,8 +9,13 @@ using System.Threading.Tasks;
 namespace Tiki.src.Managers;
 internal static class CommandManager
 { 
+  /// <summary>Command Service from DI</summary>
   private static CommandService CommandService = ServiceManager.GetService<CommandService>();
 
+
+  /// <summary>
+  /// Loads all commands
+  /// </summary>
   public static async Task LoadCommandsAsync()
   { 
     await CommandService.AddModulesAsync(Assembly.GetEntryAssembly(), ServiceManager.ServiceProvider);
