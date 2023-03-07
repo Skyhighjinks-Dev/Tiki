@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # Launch Settings
 /Tiki/Properties/launchSettings.json
+/Properties/launchSettings.json
